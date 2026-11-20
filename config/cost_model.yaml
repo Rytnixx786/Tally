@@ -1,0 +1,30 @@
+# Every number here is an assumption that changes the headline. Each has a source or a note.
+# The dashboard and report show the sensitivity to the ones that matter most.
+
+local_gpu:
+  card: "NVIDIA GeForce RTX 3060 Ti 8GB"
+  purchase_usd: 400.0            # ASSUMPTION: typical street price; replace with your receipt
+  lifetime_years: 3.0
+  utilisation: 0.30              # share of wall time the GPU does paid work; idle time is charged to that work
+  board_power_w: 170.0           # overwritten by the measured mean from reports/runs/<id>/hardware.json when present
+  system_overhead_w: 80.0        # CPU, RAM, PSU loss (ASSUMPTION; measure at the wall if you can)
+  electricity_usd_per_kwh: 0.10  # ASSUMPTION: ~BDT 12/kWh at ~BDT 120/USD; cite your tariff
+  alt_cloud_gpu_usd_per_hour: 0.22   # RunPod community RTX 3090 on-demand, checked 2026-11-19
+
+method: owned_gpu                # owned_gpu | cloud_gpu_hour
+
+cpu:
+  usd_per_hour: 0.02             # setup A inference; effectively zero
+
+cache_hit_cost_usd: 0.000001     # near zero, never exactly zero
+
+# Hosted list prices, USD per 1M tokens. price_checked_on must be updated when you re-check.
+price_book:
+  # cached_input_per_mtok: price of prompt-cache hits (OpenAI caches prompts >= 1,024 tokens automatically). VERIFY on the pricing page.
+  - { provider: openai, model: gpt-4o-mini, input_per_mtok: 0.15, cached_input_per_mtok: 0.075, output_per_mtok: 0.60, checked_on: "2026-11-19", source: "https://developers.openai.com/api/docs/pricing" }
+  - { provider: openai, model: gpt-5-nano, input_per_mtok: 0.05, output_per_mtok: 0.40, checked_on: "2026-11-19", source: "https://developers.openai.com/api/docs/pricing" }
+  - { provider: openai, model: gpt-4.1-mini, input_per_mtok: 0.40, output_per_mtok: 1.60, checked_on: "2026-11-19", source: "https://developers.openai.com/api/docs/pricing" }
+  # Gemini bills implicit-cache hits at a discount (cached_input_per_mtok, VERIFY on the pricing page). Free-tier use is
+  # still costed at the paid list price, so the comparison does not depend on a promotional tier.
+  - { provider: gemini, model: gemini-2.5-flash-lite, input_per_mtok: 0.10, cached_input_per_mtok: 0.025, output_per_mtok: 0.40, checked_on: "2026-11-19", source: "https://aistudio.google.com/docs/pricing" }
+  - { provider: anthropic, model: claude-haiku-5-5, input_per_mtok: 0.10, output_per_mtok: 0.50, checked_on: "2026-11-19", source: "https://platform.claude.com/docs/en/about-claude/pricing" }

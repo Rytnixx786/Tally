@@ -1,0 +1,67 @@
+# Experiment design. Changing anything under `split` invalidates data/splits/manifest.json
+# (tests/test_splits.py will fail until you regenerate and re-commit the manifest on purpose).
+
+dataset:
+  repo_id: bitext/Bitext-customer-support-llm-chatbot-training-dataset
+  # Pinned revision is resolved on first download and recorded in the split manifest.
+  revision: null
+  text_column: instruction
+  label_column: intent
+  category_column: category
+  flags_column: flags
+
+split:
+  seed: 20261119
+  ratios: { dev: 0.6, tune: 0.2, test: 0.2 }
+  dedup:
+    method: minhash
+    shingle_chars: 5
+    num_perm: 128
+    jaccard_threshold: 0.8
+
+setups:
+  A_tfidf:
+    enabled: true
+    c_grid: [0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0]
+    learning_curve_per_intent: [10, 25, 50, 100, 0]   # 0 = all available
+  B_local:
+    enabled: true
+    base_url_env: CINCH_BASE_URL
+    api_key_env: CINCH_API_KEY
+    model: Qwen/Qwen2.5-7B-Instruct-AWQ
+    constraint: guided_choice        # guided_choice (vLLM < 0.12) | structured_outputs (vLLM >= 0.12) | none
+    top_logprobs: 20
+    max_tokens: 16
+    concurrency: 16
+    # Also run B on test with Cinch's semantic cache ON (needs Cinch restarted with CINCH_SEMANTIC_CACHE=true
+    # when recording; replays need nothing). Headline numbers always use the cache-off run.
+    cache_arm: true
+  C_hosted:
+    # Off until billing is enabled on the Google project behind GEMINI_API_KEY (free tier = 20 req/day).
+    enabled: false
+    provider: gemini                 # openai | gemini (OpenAI-compatible endpoint) | anthropic
+    model: gemini-2.5-flash-lite     # ADR-009 (amended 2026-11-20: Gemini key available, OpenAI key not)
+    max_tokens: 64                   # Gemini pretty-prints the JSON object (~13 tokens); 16 truncated it
+    concurrency: 16
+    max_tickets_per_split: null      # null = full split; set an int to cap spend
+  D_cascade:
+    enabled: false                   # needs C (ADR-015)
+    tau_grid_step: 0.02
+    # Pre-registered objective (ADR-010): pick the tau with the lowest cost per correct on `tune`
+    # subject to accuracy >= min_relative_accuracy x C's tune accuracy. Fixed before any test run.
+    objective: min_cost_per_correct
+    min_relative_accuracy: 0.98
+
+prompts:
+  candidates: [ticket_triage.zero_shot.v1, ticket_triage.fewshot_static.v3]
+  fewshot_per_intent: 2
+  selection_split: tune
+
+stats:
+  bootstrap_resamples: 2000
+  bootstrap_seed: 7
+  ci_level: 0.95
+  ece_bins: 15
+
+budget:
+  max_hosted_spend_usd: 5.0

@@ -1,0 +1,21 @@
+# Tenants are traffic mixes over Bitext categories (ADR-007). For each ticket of category c,
+# the tenant is drawn with probability weight[tenant][c] / sum over tenants (seeded, deterministic per ticket).
+# Category names are the values found in the data (11), not the dataset card's names.
+
+seed: 20261119
+tenants:
+  support:
+    display_name: Customer Support L1
+    owner_project: tally
+    monthly_budget_usd: 50.0
+    weights: { ORDER: 6, DELIVERY: 6, SHIPPING: 6, CONTACT: 6, ACCOUNT: 1, REFUND: 1, INVOICE: 1, PAYMENT: 1, FEEDBACK: 2, SUBSCRIPTION: 1, CANCEL: 1 }
+  billing:
+    display_name: Billing & Payments
+    owner_project: tally
+    monthly_budget_usd: 30.0
+    weights: { PAYMENT: 6, REFUND: 6, INVOICE: 6, CANCEL: 6, ORDER: 1, DELIVERY: 1, SHIPPING: 1, CONTACT: 1, ACCOUNT: 1, FEEDBACK: 1, SUBSCRIPTION: 1 }
+  sales:
+    display_name: Accounts & Retention
+    owner_project: tally
+    monthly_budget_usd: 20.0
+    weights: { ACCOUNT: 6, SUBSCRIPTION: 6, FEEDBACK: 4, ORDER: 1, DELIVERY: 1, SHIPPING: 1, CONTACT: 1, REFUND: 1, INVOICE: 1, PAYMENT: 1, CANCEL: 1 }

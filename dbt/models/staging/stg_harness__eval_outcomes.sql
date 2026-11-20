@@ -1,0 +1,21 @@
+select
+    run_id,
+    decision_id,
+    ticket_id,
+    split,
+    arm,
+    tenant_id,
+    setup,
+    prompt_version,
+    gold_intent,
+    gold_category,
+    predicted_intent,
+    predicted_category,
+    valid,
+    confidence,
+    calibrated_confidence,
+    escalated,
+    final_request_id,
+    flags,
+    decided_at
+from {{ source('raw', 'eval_outcomes') }}

@@ -1,0 +1,9 @@
+{
+  "split": "tune",
+  "setup": "B_local",
+  "accuracy": {
+    "ticket_triage.zero_shot.v1": 0.8470697674418605,
+    "ticket_triage.fewshot_static.v3": 0.9103255813953488
+  },
+  "chosen": "ticket_triage.fewshot_static.v3"
+}

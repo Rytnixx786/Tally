@@ -1,0 +1,30 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Append-only landing tables written by tally-ingest (spans) and `tally publish` (everything else).
+    schema: raw
+    tables:
+      - name: otel_spans
+        description: One row per exported OpenTelemetry span. Attributes are kept as JSONB and typed in staging.
+        columns:
+          - name: span_id
+            data_tests: [not_null]
+      - name: eval_outcomes
+        description: One row per harness decision with the gold label (ground truth) attached.
+        columns:
+          - name: decision_id
+            data_tests: [unique, not_null]
+      - name: call_costs
+        description: Per-call cost from Tally's cost model (src/tally/cost.py). The only cost source.
+        columns:
+          - name: request_id
+            data_tests: [unique, not_null]
+      - name: prompt_registry
+        description: Versioned prompt templates with content hashes.
+      - name: price_book
+        description: Hosted model list prices (USD per 1M tokens) with the date they were checked.
+      - name: tenants
+        description: Simulated tenants and their traffic mixes.
+      - name: run_manifest
+        description: Manifest of every harness run (configs, chosen prompt, tau, models seen).

@@ -1,0 +1,636 @@
+{
+  "cache": {
+    "accuracy_cache_off": 0.9054532,
+    "accuracy_cache_on": 0.03722315,
+    "cost_cache_off_usd": 0.01502305,
+    "cost_cache_on_usd": 0.005412513,
+    "hit_precision": 0.03326481,
+    "hit_rate": 0.9959055,
+    "hits_wrong_but_cache_off_right": 4672,
+    "n": 5373
+  },
+  "headline": null,
+  "learning_curve": [
+    {
+      "accuracy": 0.8959613,
+      "n_train": 270.0,
+      "per_intent": 10.0
+    },
+    {
+      "accuracy": 0.9609157,
+      "n_train": 675.0,
+      "per_intent": 25.0
+    },
+    {
+      "accuracy": 0.9836218,
+      "n_train": 1350.0,
+      "per_intent": 50.0
+    },
+    {
+      "accuracy": 0.9895775,
+      "n_train": 2700.0,
+      "per_intent": 100.0
+    },
+    {
+      "accuracy": 0.998325,
+      "n_train": 16124.0,
+      "per_intent": 0.0
+    }
+  ],
+  "local_vs_baseline": {
+    "accuracy_ratio": {
+      "hi": 0.9149749,
+      "lo": 0.8991608,
+      "point": 0.9069724
+    },
+    "cpc_ratio": {
+      "hi": 10365.44,
+      "lo": 10186.11,
+      "point": 10276.04
+    },
+    "denominator": "A_tfidf",
+    "numerator": "B_local"
+  },
+  "paired_n": 5373,
+  "pairwise_mcnemar": {
+    "A_tfidf vs B_local": {
+      "first_only_correct": 504,
+      "p_holm": 3.364534e-142,
+      "p_value": 3.364534e-142,
+      "second_only_correct": 5
+    }
+  },
+  "prompt_versions_tune": {
+    "ticket_triage.fewshot_static.v3": 0.9103256,
+    "ticket_triage.zero_shot.v1": 0.8470698
+  },
+  "roi": {
+    "A_tfidf": {
+      "ai_cost_usd": 3e-05,
+      "break_even_accuracy": 0.7272727,
+      "labour_saved_usd": 14974.87,
+      "misroute_cost_usd": 67.00168,
+      "net_usd_per_month": 14907.87,
+      "sensitivity": [
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 1658.291,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 1641.541,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 1608.04,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 4974.874,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 4924.623,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 4824.121,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 20728.64,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 20519.26,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 20100.5,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 4986.041,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 4969.291,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 4935.79,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 14958.12,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 14907.87,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 14807.37,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 62325.52,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 62116.14,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 61697.38,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 9977.666,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 9960.916,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 9927.415,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 29933.0,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 29882.75,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 29782.24,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 124720.8,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 124511.4,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 124092.7,
+          "wage_usd_per_hour": 25.0
+        }
+      ]
+    },
+    "B_local": {
+      "ai_cost_usd": 0.2796026,
+      "break_even_accuracy": 0.7272778,
+      "labour_saved_usd": 13581.8,
+      "misroute_cost_usd": 3781.872,
+      "net_usd_per_month": 9799.646,
+      "sensitivity": [
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 1193.653,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 248.1849,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": -1642.751,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 3581.518,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 745.114,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": -4927.694,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 14923.88,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 3105.527,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 0.5,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": -20531.17,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 4211.83,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 3266.362,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 1375.426,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 12636.05,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 9799.646,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 4126.837,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 52651.09,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 40832.74,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 1.5,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 17196.04,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 8739.096,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 7793.628,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 5902.692,
+          "wage_usd_per_hour": 2.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 26217.85,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 23381.44,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 17708.64,
+          "wage_usd_per_hour": 6.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 1.0,
+          "net_usd_per_month": 109241.9,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 4.0,
+          "net_usd_per_month": 97423.57,
+          "wage_usd_per_hour": 25.0
+        },
+        {
+          "minutes_saved_per_correct": 3.0,
+          "misroute_penalty_minutes": 10.0,
+          "net_usd_per_month": 73786.87,
+          "wage_usd_per_hour": 25.0
+        }
+      ]
+    }
+  },
+  "run": {
+    "a_chosen_c": 2.0,
+    "chosen_prompt": "ticket_triage.fewshot_static.v3",
+    "chosen_tau": null,
+    "cost_method": "owned_gpu",
+    "run_id": "main",
+    "source": "warehouse",
+    "tau_rule": null,
+    "temperature": null,
+    "utilisation": 0.3
+  },
+  "slices": {
+    "flags": {
+      "A_tfidf": {
+        "colloquial": {
+          "accuracy": 0.9994266,
+          "n": 1744
+        },
+        "keyword-only": {
+          "accuracy": 0.9895833,
+          "n": 480
+        },
+        "lexical variation": {
+          "accuracy": 0.9983451,
+          "n": 4834
+        },
+        "morphological": {
+          "accuracy": 1.0,
+          "n": 996
+        },
+        "offensive": {
+          "accuracy": 1.0,
+          "n": 251
+        },
+        "typos": {
+          "accuracy": 0.9953271,
+          "n": 1070
+        }
+      },
+      "B_local": {
+        "colloquial": {
+          "accuracy": 0.9111239,
+          "n": 1744
+        },
+        "keyword-only": {
+          "accuracy": 0.8270833,
+          "n": 480
+        },
+        "lexical variation": {
+          "accuracy": 0.9098055,
+          "n": 4834
+        },
+        "morphological": {
+          "accuracy": 0.936747,
+          "n": 996
+        },
+        "offensive": {
+          "accuracy": 0.8844622,
+          "n": 251
+        },
+        "typos": {
+          "accuracy": 0.9028037,
+          "n": 1070
+        }
+      }
+    },
+    "intent": {
+      "A_tfidf": {
+        "cancel_order": 1.0,
+        "change_order": 0.995,
+        "change_shipping_address": 1.0,
+        "check_cancellation_fee": 1.0,
+        "check_invoice": 1.0,
+        "check_payment_methods": 1.0,
+        "check_refund_policy": 1.0,
+        "complaint": 1.0,
+        "contact_customer_service": 1.0,
+        "contact_human_agent": 1.0,
+        "create_account": 1.0,
+        "delete_account": 1.0,
+        "delivery_options": 1.0,
+        "delivery_period": 1.0,
+        "edit_account": 0.98,
+        "get_invoice": 1.0,
+        "get_refund": 0.995,
+        "newsletter_subscription": 1.0,
+        "payment_issue": 1.0,
+        "place_order": 1.0,
+        "recover_password": 1.0,
+        "registration_problems": 0.9949749,
+        "review": 1.0,
+        "set_up_shipping_address": 1.0,
+        "switch_account": 1.0,
+        "track_order": 0.9899497,
+        "track_refund": 1.0
+      },
+      "B_local": {
+        "cancel_order": 0.965,
+        "change_order": 0.965,
+        "change_shipping_address": 0.9639175,
+        "check_cancellation_fee": 1.0,
+        "check_invoice": 0.355,
+        "check_payment_methods": 1.0,
+        "check_refund_policy": 0.8944724,
+        "complaint": 1.0,
+        "contact_customer_service": 0.985,
+        "contact_human_agent": 0.925,
+        "create_account": 0.8693467,
+        "delete_account": 0.6582915,
+        "delivery_options": 0.7386935,
+        "delivery_period": 1.0,
+        "edit_account": 0.855,
+        "get_invoice": 1.0,
+        "get_refund": 0.83,
+        "newsletter_subscription": 0.98,
+        "payment_issue": 0.99,
+        "place_order": 0.98,
+        "recover_password": 1.0,
+        "registration_problems": 0.9899497,
+        "review": 0.9899497,
+        "set_up_shipping_address": 0.8894472,
+        "switch_account": 0.995,
+        "track_order": 0.6683417,
+        "track_refund": 0.9648241
+      }
+    },
+    "tenant": {
+      "A_tfidf": {
+        "billing": {
+          "accuracy": 0.9994076,
+          "cost_per_correct_usd": 3.001778e-10,
+          "n": 1688
+        },
+        "sales": {
+          "accuracy": 0.9976663,
+          "cost_per_correct_usd": 3.007018e-10,
+          "n": 1714
+        },
+        "support": {
+          "accuracy": 0.9979706,
+          "cost_per_correct_usd": 3.006101e-10,
+          "n": 1971
+        }
+      },
+      "B_local": {
+        "billing": {
+          "accuracy": 0.8874408,
+          "cost_per_correct_usd": 3.152011e-06,
+          "n": 1688
+        },
+        "sales": {
+          "accuracy": 0.9206534,
+          "cost_per_correct_usd": 3.036073e-06,
+          "n": 1714
+        },
+        "support": {
+          "accuracy": 0.9076611,
+          "cost_per_correct_usd": 3.080162e-06,
+          "n": 1971
+        }
+      }
+    }
+  },
+  "test": {
+    "A_tfidf": {
+      "accuracy": {
+        "hi": 0.9994417,
+        "lo": 0.9970221,
+        "point": 0.998325
+      },
+      "category_accuracy": 0.9996278,
+      "cost_per_1k_tickets_usd": {
+        "hi": 3e-07,
+        "lo": 3e-07,
+        "point": 3e-07
+      },
+      "cost_per_correct_usd": {
+        "hi": 3.00896e-10,
+        "lo": 3.001676e-10,
+        "point": 3.005034e-10
+      },
+      "escalation_rate": 0.0,
+      "invalid_rate": 0.0,
+      "macro_f1": 0.9983305,
+      "n": 5373,
+      "p50_latency_ms": 0.046,
+      "p95_latency_ms": 0.046,
+      "total_cost_usd": 1.6119e-06
+    },
+    "B_local": {
+      "accuracy": {
+        "hi": 0.9132701,
+        "lo": 0.8978224,
+        "point": 0.9054532
+      },
+      "category_accuracy": 0.9590545,
+      "cost_per_1k_tickets_usd": {
+        "hi": 0.002796175,
+        "lo": 0.002795875,
+        "point": 0.002796026
+      },
+      "cost_per_correct_usd": {
+        "hi": 3.114419e-06,
+        "lo": 3.061484e-06,
+        "point": 3.087985e-06
+      },
+      "escalation_rate": 0.0,
+      "invalid_rate": 0.0,
+      "macro_f1": 0.9020328,
+      "n": 5373,
+      "p50_latency_ms": 1297.603,
+      "p95_latency_ms": 1809.612,
+      "total_cost_usd": 0.01502305
+    }
+  },
+  "tune": {
+    "A_tfidf": {
+      "accuracy": 0.9979535,
+      "n": 5375
+    },
+    "B_local": {
+      "accuracy": 0.9103256,
+      "n": 5375
+    }
+  }
+}

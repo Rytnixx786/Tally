@@ -1,0 +1,313 @@
+version: 2
+
+# Public contract (docs/CONTRACTS.md §4). Contracts are enforced: a renamed or retyped column fails
+# `dbt build` here, before it can break Lexicon or Telltale. Descriptions are written for an analyst,
+# because Lexicon imports them as its column-level context.
+
+models:
+  - name: fct_requests
+    description: >
+      One row per model call. A cascade decision that escalates has two rows (local call + hosted call),
+      linked by decision_id. Use this table for per-call questions (tokens, latency, cache, cost per call).
+    columns:
+      - name: request_id
+        data_type: uuid
+        description: Unique id of one model call. Join key to Telltale events and to raw spans.
+        data_tests: [unique, not_null]
+      - name: decision_id
+        data_type: uuid
+        description: The ticket decision this call belongs to. Several calls can share one decision.
+        data_tests:
+          - not_null:
+              config: { where: "feature = 'ticket_triage'" }
+          - relationships:
+              arguments: { to: ref('fct_outcomes'), field: decision_id }
+              config: { where: "feature = 'ticket_triage'" }
+      - name: trace_id
+        data_type: text
+        description: OpenTelemetry trace id (hex).
+      - name: run_id
+        data_type: text
+        description: Harness run that produced the call.
+      - name: requested_at
+        data_type: timestamptz
+        description: When the call started (span start time).
+      - name: tenant_id
+        data_type: text
+        description: Simulated team that sent the ticket (support, billing, sales).
+        data_tests:
+          - relationships: { arguments: { to: ref('dim_tenant'), field: tenant_id } }
+      - name: feature
+        data_type: text
+        description: Product feature; always ticket_triage for Tally's own runs.
+      - name: prompt_version
+        data_type: text
+        description: Prompt template version, or 'none' for the TF-IDF baseline.
+        data_tests:
+          - relationships: { arguments: { to: ref('dim_prompt_version'), field: prompt_version } }
+      - name: setup
+        data_type: text
+        description: "Serving setup: A_tfidf (no LLM), B_local (Qwen via Cinch), C_hosted (API model), D_cascade (B then C when unsure)."
+        data_tests:
+          - accepted_values: { arguments: { values: [A_tfidf, B_local, C_hosted, D_cascade] } }
+      - name: split
+        data_type: text
+        description: Data split. Headline numbers use 'test' only; 'tune' is for choosing prompts and tau.
+        data_tests:
+          - accepted_values: { arguments: { values: [dev, tune, test] } }
+      - name: arm
+        data_type: text
+        description: "Experiment arm: 'primary' (the reported configuration), 'prompt_selection' (non-chosen prompt runs on tune), 'cache_on' (gateway semantic cache enabled)."
+        data_tests:
+          - accepted_values: { arguments: { values: [primary, prompt_selection, cache_on] } }
+      - name: call_index
+        data_type: int
+        description: Position of the call within its decision (0 = first call).
+      - name: provider
+        data_type: text
+        description: gen_ai.provider.name of the call (vllm, openai, sklearn, ...).
+      - name: model
+        data_type: text
+        description: Model that answered (response model when reported, otherwise requested model).
+      - name: input_tokens
+        data_type: int
+        description: Prompt tokens billed or processed.
+      - name: output_tokens
+        data_type: int
+        description: Completion tokens.
+      - name: cached_input_tokens
+        data_type: int
+        description: Prompt tokens served from the provider's prompt cache, when reported.
+      - name: latency_ms
+        data_type: numeric(14, 3)
+        description: Wall-clock latency of the call in milliseconds, as seen by the client.
+      - name: ttft_ms
+        data_type: numeric(14, 3)
+        description: Time to first token; NULL because triage calls are not streamed.
+      - name: cache_status
+        data_type: text
+        description: Gateway semantic-cache status (HIT, MISS) or BYPASS when the cache was off or absent.
+        data_tests:
+          - accepted_values: { arguments: { values: [HIT, MISS, BYPASS] } }
+      - name: http_status
+        data_type: int
+        description: HTTP status returned to the client (200, or a gateway rejection such as 400/402/429).
+      - name: is_escalated
+        data_type: boolean
+        description: True when this call happened because the cascade escalated to the hosted model.
+      - name: reused_response
+        data_type: boolean
+        description: True when the cascade reused the identical, deterministic response recorded for setup B or C.
+      - name: confidence
+        data_type: double precision
+        description: Label probability from token logprobs (local model) or class probability (TF-IDF). NULL for the hosted model.
+      - name: validation_passed
+        data_type: boolean
+        description: The output parsed to exactly one valid intent label.
+      - name: cost_usd
+        data_type: numeric(14, 10)
+        description: Tally cost model, in US dollars. GPU amortisation + power for local calls, list price for hosted calls.
+        data_tests: [not_null]
+      - name: billed_usd
+        data_type: numeric(14, 10)
+        description: What Cinch's FinOps ledger charged for the call (hosted-style rates). For comparison only; never use as true cost.
+
+  - name: fct_outcomes
+    description: >
+      One row per decision: one ticket triaged by one setup in one run and arm. Use this table for accuracy
+      and cost-per-correct questions. total_cost_usd already includes every call in the decision.
+    columns:
+      - name: decision_id
+        data_type: uuid
+        description: Unique id of the decision.
+        data_tests: [unique, not_null]
+      - name: decided_at
+        data_type: timestamptz
+        description: When the final answer was produced.
+      - name: run_id
+        data_type: text
+        description: Harness run id.
+      - name: final_request_id
+        data_type: uuid
+        description: The model call whose answer was used.
+      - name: ticket_id
+        data_type: text
+        description: Bitext row id (bx-00000 ... bx-26871).
+      - name: tenant_id
+        data_type: text
+        description: Simulated team that owns the ticket.
+        data_tests:
+          - relationships: { arguments: { to: ref('dim_tenant'), field: tenant_id } }
+      - name: feature
+        data_type: text
+        description: Product feature (ticket_triage).
+      - name: prompt_version
+        data_type: text
+        description: Prompt template version ('none' for TF-IDF).
+      - name: setup
+        data_type: text
+        description: Serving setup (A_tfidf, B_local, C_hosted, D_cascade).
+        data_tests:
+          - accepted_values: { arguments: { values: [A_tfidf, B_local, C_hosted, D_cascade] } }
+      - name: split
+        data_type: text
+        description: Data split (dev, tune, test). Report headline numbers on test only.
+      - name: arm
+        data_type: text
+        description: Experiment arm (primary, prompt_selection, cache_on).
+      - name: model_mix
+        data_type: text
+        description: Models used in the decision, joined with ' + ' (two models when a cascade escalated).
+      - name: predicted_label
+        data_type: text
+        description: Intent the setup chose, or NULL if the output was invalid.
+      - name: gold_label
+        data_type: text
+        description: Correct intent from the dataset.
+      - name: predicted_category
+        data_type: text
+        description: Category implied by the predicted intent.
+      - name: gold_category
+        data_type: text
+        description: Correct category (ACCOUNT, ORDER, REFUND, ...).
+      - name: is_correct
+        data_type: boolean
+        description: True when every call succeeded, the output was valid, and predicted_label = gold_label.
+        data_tests: [not_null]
+      - name: outcome_source
+        data_type: text
+        description: Where correctness comes from (gold_label for Tally's runs).
+      - name: valid
+        data_type: boolean
+        description: Output parsed to a valid label and all calls succeeded.
+      - name: escalated
+        data_type: boolean
+        description: The cascade sent this ticket to the hosted model.
+      - name: any_cache_hit
+        data_type: boolean
+        description: At least one call in the decision was answered from the gateway semantic cache.
+      - name: confidence
+        data_type: double precision
+        description: Raw label confidence of the first model.
+      - name: calibrated_confidence
+        data_type: double precision
+        description: Temperature-scaled P(correct) used by the cascade (D only).
+      - name: total_cost_usd
+        data_type: numeric(14, 10)
+        description: Sum of cost_usd over all calls in the decision.
+        data_tests: [not_null]
+      - name: total_latency_ms
+        data_type: numeric(14, 3)
+        description: Sum of call latencies (calls in a cascade run one after another).
+      - name: n_calls
+        data_type: int
+        description: Number of model calls in the decision.
+      - name: flags
+        data_type: text
+        description: "Bitext language-variation tags, e.g. Z = typos, Q = colloquial, W = offensive, K = keyword-only."
+
+  - name: dim_tenant
+    description: Simulated tenants (teams) and the category mix each one sends.
+    columns:
+      - name: tenant_id
+        data_type: text
+        description: Tenant slug.
+        data_tests: [unique, not_null]
+      - name: display_name
+        data_type: text
+        description: Human-readable team name.
+      - name: owner_project
+        data_type: text
+        description: Project that owns the tenant's traffic.
+      - name: monthly_budget_usd
+        data_type: numeric(12, 2)
+        description: Monthly AI budget configured for the tenant.
+      - name: traffic_mix
+        data_type: jsonb
+        description: Category weights used to assign tickets to this tenant.
+
+  - name: dim_prompt_version
+    description: Prompt template versions with a content hash, so a number can be traced to the exact prompt.
+    columns:
+      - name: prompt_version
+        data_type: text
+        description: Version id, e.g. ticket_triage.fewshot_static.v3.
+        data_tests: [unique, not_null]
+      - name: feature
+        data_type: text
+        description: Feature the prompt serves.
+      - name: prompt_hash
+        data_type: text
+        description: First 12 hex chars of sha256 of the template file.
+      - name: template_path
+        data_type: text
+        description: Template location in the repo.
+      - name: n_fewshot
+        data_type: int
+        description: Labelled examples per intent included in the prompt.
+      - name: description
+        data_type: text
+        description: What the prompt contains.
+      - name: created_at
+        data_type: timestamptz
+        description: When the prompt was registered.
+
+  - name: mart_cost_per_outcome
+    description: >
+      Daily aggregate per run, tenant, setup, model mix, prompt version, split and arm. Use for dashboards.
+      For overall numbers across days, re-aggregate from fct_outcomes (ratios do not add).
+    columns:
+      - name: day
+        data_type: date
+        description: UTC date of the decisions.
+      - name: run_id
+        data_type: text
+        description: Harness run id.
+      - name: tenant_id
+        data_type: text
+        description: Tenant.
+      - name: feature
+        data_type: text
+        description: Feature.
+      - name: setup
+        data_type: text
+        description: Serving setup.
+      - name: model
+        data_type: text
+        description: Model mix of the decisions.
+      - name: prompt_version
+        data_type: text
+        description: Prompt version.
+      - name: split
+        data_type: text
+        description: Data split.
+      - name: arm
+        data_type: text
+        description: Experiment arm.
+      - name: n_decisions
+        data_type: int
+        description: Decisions in the group.
+      - name: n_correct
+        data_type: int
+        description: Correct decisions in the group.
+      - name: accuracy
+        data_type: numeric(8, 6)
+        description: n_correct / n_decisions.
+      - name: total_cost_usd
+        data_type: numeric(16, 10)
+        description: Total cost of the group.
+      - name: cost_per_correct_usd
+        data_type: numeric(16, 10)
+        description: total_cost_usd / n_correct (NULL when nothing is correct).
+      - name: cache_hit_rate
+        data_type: numeric(8, 6)
+        description: Share of decisions answered from the gateway semantic cache.
+      - name: escalation_rate
+        data_type: numeric(8, 6)
+        description: Share of decisions the cascade escalated.
+      - name: p50_latency_ms
+        data_type: numeric(14, 3)
+        description: Median decision latency.
+      - name: p95_latency_ms
+        data_type: numeric(14, 3)
+        description: 95th percentile decision latency.

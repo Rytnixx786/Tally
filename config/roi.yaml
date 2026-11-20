@@ -1,0 +1,12 @@
+# ROI = n_correct * minutes_saved * wage_per_min - n_wrong * misroute_penalty_min * wage_per_min - AI cost
+# All three labour inputs are ASSUMPTIONS. Replace them with sourced numbers for your market.
+
+minutes_saved_per_correct: 1.5      # manual read-and-route time per ticket (ASSUMPTION)
+wage_usd_per_hour: 6.0              # fully loaded support-agent cost (ASSUMPTION; Bangladesh BPO range is lower, US is ~4-5x)
+misroute_penalty_minutes: 4.0       # extra handling when a ticket lands in the wrong queue (ASSUMPTION)
+tickets_per_month: 100000           # scale used to express ROI per month
+
+sensitivity:
+  minutes_saved_per_correct: [0.5, 1.5, 3.0]
+  wage_usd_per_hour: [2.0, 6.0, 25.0]
+  misroute_penalty_minutes: [1.0, 4.0, 10.0]

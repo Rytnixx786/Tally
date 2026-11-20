@@ -1,0 +1,27 @@
+[
+  {
+    "per_intent": 10.0,
+    "n_train": 270.0,
+    "accuracy": 0.8959612879210869
+  },
+  {
+    "per_intent": 25.0,
+    "n_train": 675.0,
+    "accuracy": 0.9609156895589056
+  },
+  {
+    "per_intent": 50.0,
+    "n_train": 1350.0,
+    "accuracy": 0.9836218127675415
+  },
+  {
+    "per_intent": 100.0,
+    "n_train": 2700.0,
+    "accuracy": 0.9895775172157082
+  },
+  {
+    "per_intent": 0.0,
+    "n_train": 16124.0,
+    "accuracy": 0.998324958123953
+  }
+]

@@ -1,0 +1,97 @@
+# Tally warehouse + telemetry pipeline.
+#   docker compose up -d                      -> postgres, otel-collector, tally-ingest
+#   docker compose --profile model up -d      -> also vLLM (Qwen2.5-7B AWQ) and the Cinch gateway
+# Model weights are read from ${TALLY_DOWNLOAD_DIR}/huggingface (never downloaded into the repo).
+name: tally
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: tally
+      POSTGRES_USER: tally_admin
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:-tally_admin_local}
+      TALLY_WRITER_PASSWORD: ${POSTGRES_PASSWORD:-tally_writer_local}
+      LEXICON_RO_PASSWORD: ${LEXICON_RO_PASSWORD:-lexicon_ro_local}
+    ports: ["${POSTGRES_PORT:-5432}:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./deploy/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tally_admin -d tally"]
+      interval: 5s
+      retries: 20
+
+  tally-ingest:
+    build: { context: ., dockerfile: deploy/ingest.Dockerfile }
+    environment:
+      TALLY_INGEST_DSN: postgresql://tally_writer:${POSTGRES_PASSWORD:-tally_writer_local}@postgres:5432/tally
+    ports: ["8090:8090"]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.111.0
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./deploy/otel-collector.yaml:/etc/otelcol/config.yaml:ro
+    ports: ["4317:4317", "4318:4318"]
+    depends_on: [tally-ingest]
+
+  vllm:
+    profiles: ["model"]
+    image: ${TALLY_VLLM_IMAGE:-vllm/vllm-openai:v0.6.3.post1}
+    ports: ["8000:8000"]
+    ipc: host
+    volumes:
+      - "${TALLY_DOWNLOAD_DIR:-./data/downloads}/huggingface:/root/.cache/huggingface"
+    environment:
+      HF_HUB_OFFLINE: "1"
+      VLLM_WSL2_ENABLE_PIN_MEMORY: "1"
+    deploy:
+      resources:
+        reservations:
+          devices: [{ driver: nvidia, count: 1, capabilities: [gpu] }]
+    command: >
+      --model Qwen/Qwen2.5-7B-Instruct-AWQ
+      --quantization awq_marlin
+      --max-model-len 2048
+      --max-num-seqs 32
+      --gpu-memory-utilization 0.92
+      --swap-space 1
+      --enforce-eager
+      --enable-prefix-caching
+      --max-logprobs 20
+      --dtype half
+      --seed 0
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8000/health || exit 1"]
+      interval: 10s
+      retries: 60
+      start_period: 60s
+
+  # Cinch is used exactly as published in its own repo (image built from H:\Projects\Cinch).
+  # Tally only sets environment variables; it never changes Cinch code (see docs/CINCH_CHANGES.md).
+  cinch:
+    profiles: ["model"]
+    image: ${TALLY_CINCH_IMAGE:-cinch-gateway:latest}
+    ports: ["${CINCH_PORT:-8181}:8080"]
+    environment:
+      VLLM_BASE_URL: http://vllm:8000
+      RATE_LIMIT_RPM: "100000"
+      RATE_LIMIT_TPM: "1000000000"
+      MAX_CONCURRENT_INTERACTIVE_REQUESTS: "32"
+      MAX_QUEUE_SIZE: "4096"
+      QUEUE_TIMEOUT_SECONDS: "600"
+      REQUEST_TIMEOUT_SECONDS: "120"
+      SEMANTIC_CACHE_ENABLED: "${CINCH_SEMANTIC_CACHE:-false}"
+      SEMANTIC_CACHE_CAPACITY: "100000"
+      COMPRESSOR_ENABLED: "false"
+      CASCADE_ROUTING_ENABLED: "false"
+      SHADOW_REPLAYER_ENABLED: "false"
+      FINOPS_DEFAULT_BUDGET_USD: "1000"
+    depends_on:
+      vllm: { condition: service_healthy }
+
+volumes:
+  pgdata:

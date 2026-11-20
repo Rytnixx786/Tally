@@ -1,0 +1,38 @@
+{
+  "chosen_prompt": "ticket_triage.fewshot_static.v3",
+  "chosen_tau": null,
+  "config_sha": {
+    "cost_model.yaml": "bbf686642e2c0655",
+    "experiment.yaml": "d2e924105d9aee17",
+    "roi.yaml": "17c01b5fb2aa2a3b",
+    "tenants.yaml": "82b95b8f6000f7af"
+  },
+  "cost_method": "owned_gpu",
+  "hosted": {
+    "model": "gemini-2.5-flash-lite",
+    "provider": "gemini"
+  },
+  "local_constraint": "guided_choice",
+  "local_model": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+  "mode": "replay",
+  "models_seen": {
+    "B_local": [
+      "Qwen/Qwen2.5-7B-Instruct-AWQ"
+    ]
+  },
+  "n_calls": 32244,
+  "n_decisions": 32244,
+  "prompt_hashes": {
+    "ticket_triage.fewshot_static.v3": "c45fe11bb84e",
+    "ticket_triage.zero_shot.v1": "7a8f7a281a58"
+  },
+  "replayed_calls": 21496,
+  "run_id": "main",
+  "setups": [
+    "A_tfidf",
+    "B_local"
+  ],
+  "split_manifest_sha": "d1fba1c6194451af",
+  "temperature": null,
+  "vllm_image": "vllm/vllm-openai:v0.6.3.post1"
+}

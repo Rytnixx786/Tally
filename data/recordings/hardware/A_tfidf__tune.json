@@ -1,0 +1,13 @@
+{
+  "setup": "A_tfidf",
+  "split": "tune",
+  "prompt_version": "-",
+  "variant": "",
+  "n_requests": 5375,
+  "wall_seconds": 0.25633409999863943,
+  "concurrency": 1,
+  "gpu_name": null,
+  "mean_power_w": null,
+  "max_power_w": null,
+  "n_power_samples": 0
+}

@@ -1,0 +1,13 @@
+{
+  "setup": "B_local",
+  "split": "tune",
+  "prompt_version": "ticket_triage.fewshot_static.v3",
+  "variant": "prompt_selection",
+  "n_requests": 5375,
+  "wall_seconds": 452.06431429999793,
+  "concurrency": 16,
+  "gpu_name": "NVIDIA GeForce RTX 3060 Ti",
+  "mean_power_w": 138.11910429447852,
+  "max_power_w": 181.35,
+  "n_power_samples": 815
+}

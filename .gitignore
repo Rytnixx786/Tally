@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+
+# Data and artifacts (large or regenerated; commit only small, documented fixtures)
+data/raw/
+data/downloads/
+data/snapshots/
+data/recordings/**/*.tmp
+data/interim/
+data/cache/
+*.parquet
+!reports/runs/main/*.parquet
+*.duckdb
+*.sqlite
+!tests/fixtures/**
+
+# dbt
+target/
+dbt_packages/
+logs/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Knowledge-graph output
+graphify-out/

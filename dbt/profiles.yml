@@ -1,0 +1,12 @@
+tally:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('POSTGRES_HOST', 'localhost') }}"
+      port: "{{ env_var('POSTGRES_PORT', '5432') | int }}"
+      user: "{{ env_var('POSTGRES_USER', 'tally_writer') }}"
+      password: "{{ env_var('POSTGRES_PASSWORD', 'tally_writer_local') }}"
+      dbname: "{{ env_var('POSTGRES_DB', 'tally') }}"
+      schema: marts
+      threads: 4
